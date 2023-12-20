@@ -11,7 +11,7 @@ class Field:
     
     @property
     def value(self):
-        return self.__value
+        return self.value
     
     @value.setter
     def value(self, value):
@@ -45,21 +45,27 @@ class Record:
             raise ValueError
     
     def edit_phone(self, phone_old: Phone, phone_new:Phone):
-    #TODO
-        pass   
+        for i, phone in enumerate(self.phones):
+            if phone == phone_old:
+                if phone_new.is_phone_valid():
+                    self.phones[i] = phone_new
+                else:
+                    raise ValueError("Invalid phone number")
+                return
+        raise ValueError("Phone not found")
 
-    # реалізація класу
+    
 
     def __str__(self):
         return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
 
 class AddressBook(UserDict):
-    def add_record(self, record:Record):
+    def add_record(self, record: Record):
         if record.name:
-            self.data.update(record)
+            self.data[record.name.value] = record
 
     def find(self, name:Name):
-        self.data.items()
+        return self.data.get(name.value, None)
 
 
 if __name__ == '__main__':
