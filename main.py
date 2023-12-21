@@ -9,25 +9,28 @@ class Field:
     def __str__(self):
         return str(self.value)
     
-    @property
-    def value(self):
-        return self.value
+    def __eq__(self, other):
+        return self.value == other.value
     
-    @value.setter
-    def value(self, value):
-        self.__value = value
+    # @property
+    # def value(self):
+    #     return self.value
+    
+    # @value.setter
+    # def value(self, value):
+    #     self.__value = value
 
 class Name(Field):
     def __init__(self, name):
-        self.name = name
+        self.value = name
     # реалізація класу
 
 class Phone(Field):
     def __init__(self, phone):
-        self.phone = phone
+        self.value = phone
 
     def is_phone_valid(self):
-        return True if re.match(r'^\d{10}$', self.phone) else False
+        return True if re.match(r'^\d{10}$', self.value) else False
 
 
    
@@ -57,15 +60,19 @@ class Record:
     
 
     def __str__(self):
-        return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
+        return f"Contact name: {self.name}, phones: {'; '.join(p.value for p in self.phones)}"
 
 class AddressBook(UserDict):
     def add_record(self, record: Record):
         if record.name:
-            self.data[record.name.value] = record
+            self.data[record.name] = record
 
-    def find(self, name:Name):
-        return self.data.get(name.value, None)
+    def find(self, name:str):
+        for key, record in   self.data.items():
+            if key.value == name:
+                return record
+          
+        return  None
 
 
 if __name__ == '__main__':
