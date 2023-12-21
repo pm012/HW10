@@ -9,8 +9,8 @@ class Field:
     def __str__(self):
         return str(self.value)
     
-    def __eq__(self, other):
-        return self.value == other.value
+    # def __eq__(self, other):
+    #     return self.value == other.value
     
     # @property
     # def value(self):
@@ -47,17 +47,23 @@ class Record:
         else:
             raise ValueError
     
-    def edit_phone(self, phone_old: Phone, phone_new:Phone):
+    def edit_phone(self, phone_old, phone_new):
+        phone_new = Phone(phone_new)
         for i, phone in enumerate(self.phones):
-            if phone == phone_old:
+            if phone.value == phone_old:
                 if phone_new.is_phone_valid():
                     self.phones[i] = phone_new
                 else:
                     raise ValueError("Invalid phone number")
                 return
         raise ValueError("Phone not found")
-
     
+    def find_phone(self, phone):
+        for _, phone_item in enumerate(self.phones):
+            if phone_item.value == phone:
+                return phone
+            
+        return None
 
     def __str__(self):
         return f"Contact name: {self.name}, phones: {'; '.join(p.value for p in self.phones)}"
@@ -65,14 +71,17 @@ class Record:
 class AddressBook(UserDict):
     def add_record(self, record: Record):
         if record.name:
-            self.data[record.name] = record
+            self.data.update({record.name.value: record})
 
     def find(self, name:str):
-        for key, record in   self.data.items():
-            if key.value == name:
-                return record
+        # for key, record in   self.data.items():
+        #     if key == name:
+        #         return record
           
-        return  None
+        return  self.data.get(name, None)
+    
+    def delete(self, name:str):        
+        del self.data[name]
 
 
 if __name__ == '__main__':
@@ -108,3 +117,6 @@ if __name__ == '__main__':
 
     # Видалення запису Jane
     book.delete("Jane")
+
+    for name, record in book.data.items():
+        print(record)
