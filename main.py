@@ -7,22 +7,27 @@ class Field:
         self.value = value
 
     def __str__(self):
-        return str(self.value)    
-   
+        return str(self.value)
     
+    # Validation of fields
+    def is_valid(self, value)->bool:
+        return bool(value)
+
+
+   
+# Removed usless constructor    
 class Name(Field):
-    def __init__(self, name):
-        self.value = name    
+    pass
     
 
 class Phone(Field):
     def __init__(self, phone):
-        if not Phone.is_phone_valid(phone):            
+        if not self.is_valid(phone):            
             raise ValueError("Phone is not valid")
         self.value = phone
 
-    @classmethod
-    def is_phone_valid(cls, phone):
+    
+    def is_valid(self, phone)->bool:
         return bool(re.match(r'^\d{10}$', phone))
 
    
@@ -40,15 +45,13 @@ class Record:
         phone_new = Phone(phone_new)
         for i, phone in enumerate(self.phones):
             if phone.value == phone_old:
-                if Phone.is_phone_valid(phone_new.value):
-                    self.phones[i] = phone_new
-                else:
-                    raise ValueError("Invalid phone number")
+                self.phones[i] = phone_new                
                 return
         raise ValueError("Phone not found")
     
     def find_phone(self, phone):
-        for _, phone_item in enumerate(self.phones):
+        # Removed enumarate
+        for phone_item in self.phones:
             if phone_item.value == phone:
                 return phone_item
             
