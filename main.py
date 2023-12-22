@@ -7,30 +7,23 @@ class Field:
         self.value = value
 
     def __str__(self):
-        return str(self.value)
+        return str(self.value)    
+   
     
-    # def __eq__(self, other):
-    #     return self.value == other.value
-    
-    # @property
-    # def value(self):
-    #     return self.value
-    
-    # @value.setter
-    # def value(self, value):
-    #     self.__value = value
-
 class Name(Field):
     def __init__(self, name):
-        self.value = name
-    # реалізація класу
+        self.value = name    
+    
 
 class Phone(Field):
     def __init__(self, phone):
+        if not Phone.is_phone_valid(phone):            
+            raise ValueError("Phone is not valid")
         self.value = phone
 
-    def is_phone_valid(self):
-        return True if re.match(r'^\d{10}$', self.value) else False
+    @classmethod
+    def is_phone_valid(cls, phone):
+        return bool(re.match(r'^\d{10}$', phone))
 
 
    
@@ -40,18 +33,15 @@ class Record:
         self.phones = []
 
     def add_phone(self, phone):
-        phone = Phone(phone)
-
-        if phone.is_phone_valid():
-            self.phones.append(phone)
-        else:
-            raise ValueError
+        phone = Phone(phone)        
+        self.phones.append(phone)
+        
     
     def edit_phone(self, phone_old, phone_new):
         phone_new = Phone(phone_new)
         for i, phone in enumerate(self.phones):
             if phone.value == phone_old:
-                if phone_new.is_phone_valid():
+                if Phone.is_phone_valid(phone_new.value):
                     self.phones[i] = phone_new
                 else:
                     raise ValueError("Invalid phone number")
@@ -61,27 +51,30 @@ class Record:
     def find_phone(self, phone):
         for _, phone_item in enumerate(self.phones):
             if phone_item.value == phone:
-                return phone
+                return phone_item
             
         return None
+    
+    def remove_phone(self, phone):
+        for _, phone_item in enumerate(self.phones):
+            if phone_item.value == phone:
+                self.phones.remove(phone_item)
 
     def __str__(self):
         return f"Contact name: {self.name}, phones: {'; '.join(p.value for p in self.phones)}"
 
 class AddressBook(UserDict):
     def add_record(self, record: Record):
-        if record.name:
-            self.data.update({record.name.value: record})
+        if not record.name:
+            return
+        self.data[record.name.value] = record
 
     def find(self, name:str):
-        # for key, record in   self.data.items():
-        #     if key == name:
-        #         return record
-          
         return  self.data.get(name, None)
     
     def delete(self, name:str):        
-        del self.data[name]
+            self.pop(name, None)
+        
 
 
 if __name__ == '__main__':
@@ -117,6 +110,8 @@ if __name__ == '__main__':
 
     # Видалення запису Jane
     book.delete("Jane")
+    book.delete("Jane")
+    john_record.remove_phone('5555555555')
 
     for name, record in book.data.items():
         print(record)
