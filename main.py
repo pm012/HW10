@@ -4,6 +4,8 @@ import re
 
 class Field:
     def __init__(self, value):
+        if not self.is_valid(value):
+            raise ValueError("Value is not valid")
         self.value = value
 
     def __str__(self):
@@ -21,11 +23,6 @@ class Name(Field):
     
 
 class Phone(Field):
-    def __init__(self, phone):
-        if not self.is_valid(phone):            
-            raise ValueError("Phone is not valid")
-        self.value = phone
-
     
     def is_valid(self, phone)->bool:
         return bool(re.match(r'^\d{10}$', phone))
