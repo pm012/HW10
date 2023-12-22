@@ -25,7 +25,6 @@ class Phone(Field):
     def is_phone_valid(cls, phone):
         return bool(re.match(r'^\d{10}$', phone))
 
-
    
 class Record:
     def __init__(self, name):
@@ -63,6 +62,7 @@ class Record:
     def __str__(self):
         return f"Contact name: {self.name}, phones: {'; '.join(p.value for p in self.phones)}"
 
+
 class AddressBook(UserDict):
     def add_record(self, record: Record):
         if not record.name:
@@ -74,7 +74,6 @@ class AddressBook(UserDict):
     
     def delete(self, name:str):        
             self.pop(name, None)
-        
 
 
 if __name__ == '__main__':
