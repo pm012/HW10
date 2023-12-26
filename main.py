@@ -55,7 +55,7 @@ class Record:
         return None
     
     def remove_phone(self, phone):
-        for _, phone_item in enumerate(self.phones):
+        for  phone_item in self.phones:
             if phone_item.value == phone:
                 self.phones.remove(phone_item)
 
